@@ -9,7 +9,7 @@ app.listen(port, () => console.log(title + ' listening on port ' + port));
 
 app.get('/', (req, res) => res.send(title));
 
-app.get('/sensor', (request, response) => {
+app.post('/sensor', (request, response) => {
 	console.log('Received sensor request: ', request.query);
 
 	// e.g. http://localhost:4050/sensor?id=123&data=something
