@@ -8,7 +8,7 @@ app.use(cors());
 const title = 'FIN4OracleEngine';
 
 const HDWalletProvider = require('@truffle/hdwallet-provider');
-const Tx = require('ethereumjs-tx');
+const Tx = require('ethereumjs-tx').Transaction;
 const Web3 = require('web3');
 const networkURL = 'https://rinkeby.infura.io/v3/' + config.INFURA_API_KEY;
 const provider = new HDWalletProvider(config.ORACLE_ACCOUNT.MNEMONIC, networkURL);
