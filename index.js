@@ -3,8 +3,7 @@ const app = express();
 const port = 4050;
 const cors = require('cors');
 const moment = require('moment');
-const fs = require('fs');
-const config = JSON.parse(fs.readFileSync('./config.json'));
+const config = require('./config.json');
 app.use(cors());
 const title = 'FIN4OracleEngine';
 
