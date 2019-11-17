@@ -3,7 +3,7 @@ Provides trusted links to sensors, aggregates sensor data and acts as FIN4Xplore
 
 ## Setup
 
-`config.json`:
+### `config.json`
 
 ```json
 {
@@ -15,3 +15,7 @@ Provides trusted links to sensors, aggregates sensor data and acts as FIN4Xplore
     }
 }
 ```
+
+### `Fin4OracleHub.json`
+
+The result of running `truffle compile` on `Fin4OracleHub.sol` must be copied into this folder.
