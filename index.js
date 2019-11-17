@@ -15,7 +15,10 @@ const networkURL = 'http://localhost:7545'; // 'https://rinkeby.infura.io/v3/' +
 const provider = new HDWalletProvider(config.ORACLE_ACCOUNT.MNEMONIC, networkURL);
 const web3 = new Web3(provider);
 const accountAddress = web3.currentProvider.addresses[0];
-let privateKey = Buffer.from(config.ORACLE_ACCOUNT.PRIVATE_KEY, 'hex');
+const privateKey = Buffer.from(config.ORACLE_ACCOUNT.PRIVATE_KEY, 'hex');
+const Fin4OracleHubABI = require('./Fin4OracleHub.json').abi;
+const contract = new web3.eth.Contract(Fin4OracleHubABI);
+const contractAddress = config.Fin4OracleHubAddress;
 
 app.listen(port, () => console.log(title + ' listening on port ' + port));
 
@@ -26,19 +29,45 @@ app.post('/sensor', (request, response) => {
 
 	// e.g. http://localhost:4050/sensor?id=123&data=something
 
-	let timestamp = Math.round(moment().valueOf());
 	let sensorID = request.query.id;
+	let timestamp = Math.round(moment().valueOf());
 	let data = request.query.data;
-	let contractAddress = config.Fin4OracleHubAddress;
 
-	callFin4OracleHub(contractAddress, sensorID, timestamp, data, response);
+	callFin4OracleHub(sensorID, timestamp, data, response);
 });
 
-let callFin4OracleHub = async function(contractAddress, sensorID, timestamp, data, response) {
+let callFin4OracleHub = async function(sensorID, timestamp, data, response) {
 	console.log('Attempting to call Fin4OracleHub.receiveSensorSignal()', contractAddress, sensorID, timestamp, data);
 
-	// TODO
-	// --> receiveSensorSignal(string memory sensorID, uint timestamp, string memory data)
+	// Fin4OracleHub.receiveSensorSignal(string memory sensorID, uint timestamp, string memory data)
+	let callData = contract.methods.receiveSensorSignal(sensorID, timestamp, data).encodeABI();
 
-	response.send('Request received');
+	web3.eth.getGasPrice((e, gasPrice) => {
+		console.log('Got gas price: ' + gasPrice);
+		web3.eth.getTransactionCount(accountAddress).then(count => {
+			console.log('Got transaction count: ' + count);
+
+			const rawTransaction = {
+				from: accountAddress,
+				gas: web3.utils.toHex(100000),
+				gasPrice: web3.utils.toHex(gasPrice * 2),
+				to: contractAddress,
+				// value: '0x00',
+				chainId: web3.utils.toHex(networkID),
+				data: callData,
+				nonce: web3.utils.toHex(count)
+			};
+			console.log('Created rawTransaction');
+
+			var tx = new Tx(rawTransaction);
+			tx.sign(privateKey);
+			console.log('Transaction is signed');
+
+			web3.eth.sendSignedTransaction('0x' + tx.serialize().toString('hex')).on('receipt', receipt => {
+				let report = 'Called Fin4OracleHub.receiveSensorSignal()';
+				console.log(report);
+				response.send(report);
+			});
+		});
+	});
 };
