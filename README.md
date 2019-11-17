@@ -7,6 +7,11 @@ Provides trusted links to sensors, aggregates sensor data and acts as FIN4Xplore
 
 ```json
 {
-    "Fin4OracleHubAddress": ""
+    "Fin4OracleHubAddress": "",
+    "INFURA_API_KEY": "",
+    "ORACLE_ACCOUNT": {
+        "MNEMONIC": "",
+        "PRIVATE_KEY": ""
+    }
 }
 ```
