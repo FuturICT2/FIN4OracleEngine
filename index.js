@@ -27,7 +27,7 @@ app.get('/', (req, res) => res.send(title));
 app.post('/sensor', (request, response) => {
 	console.log('Received sensor request: ', request.query);
 
-	// e.g. http://localhost:4050/sensor?id=123&data=something
+	// e.g. http://localhost:4050/sensor?id=PlantWateringSensor&data=ThePlantSaysThanksForWatering
 
 	let sensorID = request.query.id;
 	let timestamp = Math.round(moment().valueOf());
@@ -52,7 +52,7 @@ let callFin4OracleHub = async function(sensorID, timestamp, data, response) {
 				gas: web3.utils.toHex(100000),
 				gasPrice: web3.utils.toHex(gasPrice * 2),
 				to: contractAddress,
-				// value: '0x00',
+				value: '0x00',
 				chainId: web3.utils.toHex(networkID),
 				data: callData,
 				nonce: web3.utils.toHex(count)
