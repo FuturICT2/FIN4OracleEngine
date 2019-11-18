@@ -49,7 +49,7 @@ let callFin4OracleHub = async function(sensorID, timestamp, data, response) {
 
 			const rawTransaction = {
 				from: accountAddress,
-				gas: web3.utils.toHex(100000),
+				gas: web3.utils.toHex(100000 * 10), // is * 10 a good factor?? 
 				gasPrice: web3.utils.toHex(gasPrice * 2),
 				to: contractAddress,
 				value: '0x00',
